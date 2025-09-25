@@ -29,7 +29,15 @@ searchForm.addEventListener('submit', async event => {
   hideLoadMoreButton(); // приховуємо кнопку
 
   query = event.target.elements.search.value.trim();
-  if (!query) return;
+  if (!query) {
+    iziToast.show({
+      title: '⚠️',
+      color: 'green',
+      message: 'Please enter a search query!',
+      position: 'topRight',
+    });
+    return;
+  }
 
   page = 1; // скидати сторінку при новому пошуку
 
@@ -48,6 +56,7 @@ searchForm.addEventListener('submit', async event => {
           'Sorry, there are no images matching your search query. Please try again!',
         position: 'topRight',
       });
+
       return;
     }
     renderGallery(data.hits);
@@ -57,6 +66,13 @@ searchForm.addEventListener('submit', async event => {
     if (page < totalPages) {
       showLoadMoreButton();
       console.log(data.totalHits);
+    } else {
+      // Якщо всі результати вміщаються на одній сторінці
+      iziToast.show({
+        message: 'We are sorry, but you have reached the end of search results',
+        position: 'topRight',
+        color: 'blue',
+      });
     }
   } catch (error) {
     console.error(error);
